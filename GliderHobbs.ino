@@ -1,3 +1,5 @@
+//#define DEBUG 
+
 // shared state
 float asi_asi; // current airspeed
 float asi_last; // airspeed 1s ago
@@ -12,10 +14,14 @@ void ui_msg(const char * msg);
 #include <avr/wdt.h>
 #include "display.h"
 #include "alt.h"
-#include "bmp.h"
+//#include "bmp.h"
+#include "bmp2.h"
 #include "adc.h"
 #include "asi.h"
 #include "hour.h"
+
+// placeholder for engine hobbs oil pressure sensor
+#define DE_PIN 10
 
 // configure free-running ADC ISR to read ASI
 // Analog pin for ASI
@@ -57,6 +63,9 @@ void setup() {
   airframe_hours.load();
   fs_setup();
   ui_setup();
+
+  // placeholder...
+  pinMode(DE_PIN, INPUT_PULLUP);
 }
 
 // loop timer
@@ -78,7 +87,7 @@ void loop() {
   // ui update
   ui_run();
 
-  if(millis() - ltime > 1000) {
+  if(millis() - ltime > 500) {
     // update non-freerunning state every 1s
 
     // read asi
@@ -127,6 +136,7 @@ void loop() {
     Serial.print("VSI2: "); 
     Serial.println(alt_vsi+asi_de); 
 #endif
+    //Serial.println(digitalRead(DE_PIN));
     // energy
     //float e = asi_asi * asi_asi * 0.5;
     //e += alt_alt * 9.8;

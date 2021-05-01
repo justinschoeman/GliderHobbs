@@ -32,7 +32,6 @@ void bmp_setup(void) {
   //begin() initializes the interface, checks the sensor ID and reads the calibration parameters.  
   if(!bmp180.begin()) {
     display_error(F("BMP180 init fail"));
-    while (1);
   }
 
   //reset sensor to default parameters.

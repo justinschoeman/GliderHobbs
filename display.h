@@ -114,8 +114,8 @@ bool display_run(void) {
     display_eol = 0;
   }
 #ifdef DEBUG
-  Serial.print("dt: ");
-  Serial.println(millis() - ms);
+  //Serial.print("dt: ");
+  //Serial.println(millis() - ms);
 #endif
   return 1;
 }

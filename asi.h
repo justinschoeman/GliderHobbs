@@ -1,5 +1,5 @@
 
-const float asi_cal_zero = 0.2197;
+const float asi_cal_zero = 0.22835;
 const float asi_cal_scale = 0.45;
 
 #if 0
@@ -24,7 +24,8 @@ float asi_read(void) {
   // convert to voltage
   t /= (float)(1024ULL << ASI_AVG_BITS);
   t *= 5.0;
-  //Serial.println(t * 100.0);
+  Serial.print("rawasi: ");
+  Serial.println(t * 100.0);
 
   // convert to pressure
   t -= asi_cal_zero; // offset
@@ -74,23 +75,40 @@ float asi_read(void) {
   // convert to voltage
   float t = (float)t_val;
   t /= (float)t_cnt;
-  t *= 5.0/1024.0;
+  t *= 3.3/1024.0;
 #ifdef DEBUG
-  Serial.println(t * 100.0);
+  Serial.print("rawasi: ");
+  Serial.println(t * 1000.0);
 #endif
 
   // convert to pressure
   t -= asi_cal_zero; // offset
+#ifdef DEBUG
+  Serial.print("rawasi2: ");
+  Serial.println(t * 1000.0);
+#endif
   t /= asi_cal_scale; // scale
+#ifdef DEBUG
+  Serial.print("rawasi3: ");
+  Serial.println(t * 1000.0);
+#endif
 
   // clamp zero
   if(t < 0.0) t = 0.0;
+#ifdef DEBUG
+  Serial.print("rawasi4: ");
+  Serial.println(t * 1000.0);
+#endif
 
   // convert to airspeed
   //https://tghaviation.com/aircraft-instrument-services/pitot-static-system-airspeed-calculation/
   t /= 101.325;
   t += 1.0;
   t = pow(t, 2.0/7.0);
+#ifdef DEBUG
+  Serial.print("rawasi5: ");
+  Serial.println(t * 1000.0);
+#endif
   t -= 1.0;
   t *= 5.0;
   t = sqrt(t);

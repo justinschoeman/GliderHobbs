@@ -20,7 +20,9 @@ using namespace BLA;
 
 // measurement std (3 sigma is around 2 ft)
 //#define n_p (60.0 / 3.0)
-#define ALT_n_p 2.4693
+//#define ALT_n_p 2.4693
+//#define ALT_n_p 2.1093e-01
+#define ALT_n_p (2.1093e-01 * 8.0)
 // model std (1/inertia)
 #define ALT_m_p 0.1
 #define ALT_m_s 0.1
@@ -70,6 +72,10 @@ int _alt_init(float a) {
 
 int alt_run(float p) {
   float a = alt_p2a(p);
+
+#ifdef DEBUG
+  Serial.println(a);
+#endif
 
   // init if required
   if(!alt_init) return _alt_init(a);
