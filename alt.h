@@ -8,6 +8,7 @@ inline float alt_p2a(float p) {
   return k_a * (1 - pow(p/k_p0, k_e));
 }
 
+//https://github.com/rfetick/Kalman
 #include "Kalman.h"
 using namespace BLA;
 

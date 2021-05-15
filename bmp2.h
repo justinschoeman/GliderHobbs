@@ -20,6 +20,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 
+//BMx280MI
 #include <BMx280I2C.h>
 
 #define BMP_I2C_ADDRESS 0x77
