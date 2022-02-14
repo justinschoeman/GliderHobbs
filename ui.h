@@ -55,27 +55,49 @@ void ui_run(void) {
   if(display_c >= 0) return; // wait for last row to be complete
   if(ui_msg_state >= 0) return ui_run_msg(); // jump to message display, if required
   display_style = 0; // default to 1x1 chars
+  int submode = millis()/1000UL; // engine/flight sub mode - get seconds
+  submode = submode % 8; // 0-7
   switch(ui_state) {
     case 0:
       display_y = 0;
       display_style = 0x82;
-      if(fs_state) {
-        snprintf(display_buf, sizeof(display_buf), "*");
-        display_append_float(airframe_hours.get_current());
+      if(submode < 4) {
+        if(fs_state) {
+          snprintf(display_buf, sizeof(display_buf), "*");
+          display_append_float(airframe_hours.get_current());
+        } else {
+          display_buf[0] = 0;
+          display_append_float(airframe_hours.get());
+        }
       } else {
-        display_buf[0] = 0;
-        display_append_float(airframe_hours.get());
+        if(es_state) {
+          snprintf(display_buf, sizeof(display_buf), "*");
+          display_append_float(engine_hours.get_current());
+        } else {
+          display_buf[0] = 0;
+          display_append_float(engine_hours.get());
+        }
       }
       break;
     case 1:
       display_y = 3;
       display_style = 0x80;
-      if(!fs_state) {
-        snprintf(display_buf, sizeof(display_buf), "*");
-        display_append_float(airframe_hours.get_current());
+      if(submode < 4) {
+        if(!fs_state) {
+          snprintf(display_buf, sizeof(display_buf), "AIR *");
+          display_append_float(airframe_hours.get_current());
+        } else {
+          snprintf(display_buf, sizeof(display_buf), "AIR ");
+          display_append_float(airframe_hours.get());
+        }
       } else {
-        display_buf[0] = 0;
-        display_append_float(airframe_hours.get());
+        if(!es_state) {
+          snprintf(display_buf, sizeof(display_buf), "ENG *");
+          display_append_float(engine_hours.get_current());
+        } else {
+          snprintf(display_buf, sizeof(display_buf), "ENG ");
+          display_append_float(engine_hours.get());
+        }
       }
       break;
     case 2:

@@ -39,6 +39,14 @@ Hour airframe_hours = Hour(16, 32);
 // requires airframe_hours to be declared...
 #include "fs.h"
 
+// instantiate engine hour meter with eeprom storage
+// 32 blocks starting at address 16
+// 160 .. 287
+Hour engine_hours = Hour(160, 32);
+
+// requires engine_hours to be declared...
+#include "es.h"
+
 // load ui (requires everything else to be defined)
 #include "ui.h"
 
@@ -57,11 +65,14 @@ void setup() {
   alt_setup();
   bmp_setup();
   adc_setup(adc_conf, 1);
-  //airframe_hours.set(85400LL);
+  //airframe_hours.set(0LL);
   //airframe_hours.set(49998LL);
+  //engine_hours.set(0LL);
   //while(1) {}
   airframe_hours.load();
   fs_setup();
+  engine_hours.load();
+  es_setup();
   ui_setup();
 
   // placeholder...
@@ -82,6 +93,8 @@ void loop() {
   }
   // run the airframe hobbs
   if(airframe_hours.update()) return;
+  // run the engine hobbs
+  if(engine_hours.update()) return;
   // display update
   if(display_run()) return;
   // ui update
@@ -95,6 +108,9 @@ void loop() {
 
     // update flight state (requires new asi reading)
     fs_run();
+
+    // update engine state
+    es_run();
 
     // estimate vsi as current alt - last alt (runs every second, so result should be m/s)
     alt_vsi_m = alt_alt - alt_last;
